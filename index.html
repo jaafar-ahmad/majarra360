@@ -1,0 +1,491 @@
+<title>فقرة 360</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&family=Tajawal:wght@400;500;700&display=swap">
+<style>
+/* Layout: one slide at a time, centered column, ring motif from the "360" name, presenter notes in a bottom sheet */
+:root{
+  --bg:#EEF1F4;
+  --surface:#FFFFFF;
+  --ink:#12202B;
+  --muted:#5A6B78;
+  --line:#D3DBE1;
+  --accent:#0B7F74;
+  --accent-ink:#FFFFFF;
+  --warm:#B96A00;
+  --good:#1B7F3B;
+  --bad:#C0352B;
+  --font-display:"Cairo","Tajawal",system-ui,sans-serif;
+  --font-body:"Tajawal","Cairo",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1A22;--surface:#16262F;--ink:#EAF1F5;--muted:#9DB0BC;--line:#2A3E4A;
+  --accent:#3CC5B5;--accent-ink:#06211E;--warm:#F4B04A;--good:#5FD387;--bad:#FF7B70;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1A22;--surface:#16262F;--ink:#EAF1F5;--muted:#9DB0BC;--line:#2A3E4A;
+  --accent:#3CC5B5;--accent-ink:#06211E;--warm:#F4B04A;--good:#5FD387;--bad:#FF7B70;color-scheme:dark}
+
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:18px;line-height:1.6;margin:0}
+*{box-sizing:border-box}
+.app{height:100%;display:flex;flex-direction:column;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px}
+.stage{flex:1;min-height:0;overflow-y:auto;display:flex;position:relative}
+.slide{display:none;margin:auto;width:100%;max-width:880px;padding-block:16px;flex-direction:column;gap:20px;animation:in .35s ease both}
+.slide.active{display:flex}
+@keyframes in{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.slide{animation:none}}
+
+h1,h2,h3{font-family:var(--font-display);margin:0;text-wrap:balance;line-height:1.2}
+h1{font-size:clamp(2.2rem,7vw,4.2rem);font-weight:900}
+h2{font-size:clamp(1.7rem,4.6vw,2.8rem);font-weight:800}
+h3{font-size:1.2rem;font-weight:800}
+p{margin:0}
+.eyebrow{font-family:var(--font-display);font-weight:600;font-size:.9rem;color:var(--accent);letter-spacing:.04em}
+.lead{font-size:clamp(1.1rem,2.6vw,1.45rem);color:var(--muted);max-width:34em}
+
+.ring{width:clamp(120px,26vw,200px);aspect-ratio:1;max-width:100%;border-radius:50%;display:grid;place-items:center;
+  background:var(--accent);position:relative}
+.ring::after{content:"";position:absolute;inset:10px;border-radius:50%;background:var(--bg)}
+.ring span{position:relative;z-index:1;font-family:var(--font-display);font-weight:900;font-size:clamp(2rem,6vw,3.4rem);line-height:1;display:flex;flex-direction:column;align-items:center;gap:.15em}
+.ring span small{font-size:.4em;font-weight:800;color:var(--accent)}
+.cover{align-items:flex-start;gap:24px}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card .time{font-family:var(--font-display);font-weight:800;color:var(--warm);font-size:.95rem}
+.card h3{font-size:1.4rem}
+.card p{color:var(--muted)}
+
+.claim{font-family:var(--font-display);font-weight:800;font-size:clamp(1.5rem,4.4vw,2.6rem);line-height:1.35;text-wrap:balance}
+.btn{font:inherit;font-family:var(--font-display);font-weight:700;font-size:1rem;background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:10px 20px;cursor:pointer;min-height:44px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:focus-visible,.nav button:focus-visible,.chip:focus-visible,.pill:focus-visible{outline:3px solid var(--warm);outline-offset:2px}
+.answer{display:flex;flex-direction:column;gap:10px;border-top:2px solid var(--line);padding-top:16px}
+.verdict{font-family:var(--font-display);font-weight:900;font-size:clamp(1.6rem,4vw,2.4rem)}
+.verdict.t{color:var(--good)}.verdict.f{color:var(--bad)}
+.answer .why{font-size:1.25rem}
+.tag{font-family:var(--font-display);font-size:.85rem;font-weight:700;color:var(--muted)}
+.fact .btn{align-self:flex-start}
+.trow{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.timer{display:flex;align-items:center;gap:12px;flex:1;min-width:200px}
+.tnum{font-family:var(--font-display);font-weight:900;font-size:clamp(2rem,6vw,3.4rem);line-height:1;min-width:2.2ch;text-align:center;font-variant-numeric:tabular-nums;color:var(--accent)}
+.tbar{flex:1;height:10px;border-radius:5px;background:var(--line);overflow:hidden;min-width:60px}
+.tbar i{display:block;height:100%;width:100%;background:var(--accent);transform-origin:right center}
+.timer.low .tnum{color:var(--bad)}
+.timer.low .tbar i{background:var(--bad)}
+.timer.end .tnum{font-size:clamp(1.3rem,4vw,2rem);color:var(--bad)}
+
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:12px;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+.steps li::before{content:counter(s);font-family:var(--font-display);font-weight:900;font-size:1.6rem;color:var(--accent);width:2ch;text-align:center}
+
+.points{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.pt{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 18px;display:flex;flex-direction:column;gap:2px}
+.pt b{font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums}
+.pt span{color:var(--muted)}
+
+.titles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.tt{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tt b{font-family:var(--font-display);font-weight:800;font-size:1.15rem}
+.tt span{color:var(--muted);font-size:.95rem}
+.tt.first{border-color:var(--warm);box-shadow:inset 0 0 0 1px var(--warm)}
+.tt.first b{color:var(--warm)}
+
+/* game board */
+.game{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:760px){.game{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.vol{font-family:var(--font-display);font-weight:900;font-size:clamp(1.8rem,5vw,2.8rem);color:var(--warm);min-height:1.3em}
+.vol.empty{color:var(--muted);font-weight:600;font-size:1.2rem}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.addrow{display:flex;gap:8px}
+.addrow input{flex:1;min-width:0;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 12px;min-height:44px}
+.addrow input:focus{outline:2px solid var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-family:var(--font-display);font-weight:600;font-size:.95rem;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);padding:4px 14px;cursor:pointer;min-height:38px;display:inline-flex;align-items:center;gap:8px}
+.chip .n{background:var(--accent);color:var(--accent-ink);border-radius:50%;min-width:1.6em;height:1.6em;display:grid;place-items:center;font-size:.8rem;font-weight:900}
+.chip[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.chip.vc{cursor:default;color:var(--muted)}
+.chip .x{color:var(--bad);font-weight:900}
+.hint{color:var(--muted);font-size:.95rem}
+.gold{display:flex;gap:8px;align-items:center;font-family:var(--font-display);font-weight:600;font-size:.95rem}
+.gold input{width:20px;height:20px;accent-color:var(--accent)}
+.board{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.board li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 10px;border-radius:8px;background:var(--bg);min-width:0}
+.board .rk{font-family:var(--font-display);font-weight:900;color:var(--warm);width:1.6ch}
+.board .nm{overflow-wrap:anywhere}
+.board .nm small{display:block;color:var(--muted);font-size:.8rem;line-height:1.3}
+.board .sc{font-family:var(--font-display);font-weight:900;font-size:1.3rem;font-variant-numeric:tabular-nums}
+.big li{padding:14px 16px}
+.big .nm{font-size:1.3rem;font-weight:700}
+.big .nm small{font-size:.95rem;color:var(--accent);font-weight:600}
+.big li:first-child{border:2px solid var(--warm)}
+
+.nav{display:flex;align-items:center;gap:12px;padding-top:10px;border-top:1px solid var(--line)}
+.nav button{font:inherit;font-family:var(--font-display);font-weight:700;font-size:.95rem;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 16px;cursor:pointer;min-height:40px}
+.nav button:disabled{opacity:.4;cursor:default}
+.progress{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden;min-width:40px}
+.progress i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.count{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.9rem;min-width:4ch;text-align:center}
+.notes{display:none;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-bottom:10px;max-height:32%;overflow-y:auto}
+.notes.on{display:block}
+.notes b{font-family:var(--font-display);color:var(--warm)}
+@media (max-width:520px){.hide-sm{display:none}body{font-size:17px}}
+</style>
+
+<div class="app" lang="ar" dir="rtl">
+<main class="stage" id="stage">
+
+<section class="slide cover" data-note="رحّب بالجمهور بجملة خفيفة. قلهم إنو الفقرة قصيرة وكل واحد رح يشارك فيها من مكانو عن طريق الشات.">
+  <div class="ring"><span><small>مجرة</small>٣٦٠</span></div>
+  <p class="eyebrow">فقرة ترفيهية</p>
+  <h1>استراحة من الشغل،<br>بس بعقل شغّال</h1>
+  <p class="lead">معلومات غريبة ولعبة تخمينة</p>
+</section>
+
+<section class="slide" data-note="اشرح الفقرتين بجملة لكل وحدة. نبّه إنو الفقرة التانية بدها مشاركة من الكل بالشات.">
+  <p class="eyebrow">برنامج الفقرة</p>
+  <h2>فقرتين</h2>
+  <div class="grid2">
+    <div class="card"><span class="time">الأولى</span><h3>صدق أو لا تصدق</h3><p>ست معلومات، وبتبقى مفاجآت. ولكل واحد رأيو.</p></div>
+    <div class="card"><span class="time">الثانية</span><h3>٣ صفات، وحدة صح</h3><p>متطوعين بيحكوا عن حالهم، وإنتو بتحزروا بالشات. وفي لقب بانتظار الفائز.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-note="اطلب منهم يكتبوا بالشات 'صح' أو 'غلط' قبل ما تكشف الجواب. هيك الكل بيشارك من أول لحظة.">
+  <p class="eyebrow">الفقرة الأولى</p>
+  <h1>صدق أو لا تصدق</h1>
+  <p class="lead">بقرأ الجملة، وإنتو بتكتبوا بالشات: صح أو غلط. بعدين منكشف الجواب.</p>
+</section>
+
+<section class="slide fact" data-note="اترك ثواني للتخمين واقرأ الشات. أغلب الناس بتقول صح لأنها من أشهر المعلومات. رائد الفضاء الصيني يانغ ليوي نفسو قال بعد رحلتو سنة ٢٠٠٣ إنو ما شاف السور بعينو.">
+  <span class="tag">معلومة ١ من ٦</span>
+  <p class="claim">سور الصين العظيم بينشاف من الفضاء بالعين المجردة.</p>
+  <button class="btn reveal">اكشف الجواب</button>
+  <div class="answer" hidden>
+    <span class="verdict f">غلط</span>
+    <p class="why">السور طويل بس عرضو بضعة أمتار، فبيضيع بين الأرض من هالبعد. رواد فضاء كتير، منهن أول رائد فضاء صيني، قالوا إنهم ما شافوه بعينهم.</p>
+  </div>
+</section>
+
+<section class="slide fact" data-note="اترك لهم يخمنوا بالأرقام. التدريس بأكسفورد موثق من حوالي سنة ١٠٩٦، وتأسيس مدينة تينوتشتيتلان عاصمة الأزتك حوالي سنة ١٣٢٥.">
+  <span class="tag">معلومة ٢ من ٦</span>
+  <p class="claim">جامعة أكسفورد أقدم من إمبراطورية الأزتك.</p>
+  <button class="btn reveal">اكشف الجواب</button>
+  <div class="answer" hidden>
+    <span class="verdict t">صح</span>
+    <p class="why">التدريس بأكسفورد بدأ حوالي سنة ١٠٩٦، وعاصمة الأزتك تأسست حوالي سنة ١٣٢٥. يعني كان في طلاب بأكسفورد قبل ما تنبني مدينتهم بأكتر من مئتي سنة.</p>
+  </div>
+</section>
+
+<section class="slide fact" data-note="كلنا تعلمنا هالشي بالمدرسة. الصحراء هون يعني المنطقة اللي أمطارها قليلة جداً، مش الرمل. القطب الجنوبي حوالي ١٤ مليون كم مربع والصحراء الكبرى حوالي ٩ مليون.">
+  <span class="tag">معلومة ٣ من ٦</span>
+  <p class="claim">الصحراء الكبرى هي أكبر صحراء بالعالم.</p>
+  <button class="btn reveal">اكشف الجواب</button>
+  <div class="answer" hidden>
+    <span class="verdict f">غلط</span>
+    <p class="why">الصحراء بالتعريف العلمي هي المنطقة اللي أمطارها قليلة جداً، مش المنطقة الرملية. حسب هالتعريف، أكبر صحراء هي القارة القطبية الجنوبية بحوالي ١٤ مليون كيلومتر مربع، والصحراء الكبرى حوالي ٩ مليون.</p>
+  </div>
+</section>
+
+<section class="slide fact" data-note="اسأل الحضور: القروش أقدم ولا الأشجار؟ القروش حوالي ٤٥٠ مليون سنة تقريباً، وأقدم الأشجار حوالي ٣٥٠ إلى ٣٨٥ مليون سنة.">
+  <span class="tag">معلومة ٤ من ٦</span>
+  <p class="claim">أسماك القرش ظهرت على الأرض قبل الأشجار.</p>
+  <button class="btn reveal">اكشف الجواب</button>
+  <div class="answer" hidden>
+    <span class="verdict t">صح</span>
+    <p class="why">القروش ظهرت من حوالي ٤٥٠ مليون سنة، وأقدم الأشجار ظهرت من حوالي ٣٥٠ إلى ٣٨٥ مليون سنة. يعني القروش عاشت وقت ما كانت اليابسة بلا غابات.</p>
+  </div>
+</section>
+
+<section class="slide fact" data-note="الكل بيتخيل نابليون قصير. السبب إنو طولو انكتب بالوحدات الفرنسية القديمة (٥ أقدام و٢ إنش) وهاي بتساوي حوالي ١٦٩ سم، وكان متوسط طول الرجل الفرنسي وقتها حوالي ١٦٥ سم. كمان الرسوم البريطانية الساخرة بالغت بتصغيرو.">
+  <span class="tag">معلومة ٥ من ٦</span>
+  <p class="claim">نابليون بونابرت كان أقصر من أغلب رجال عصره.</p>
+  <button class="btn reveal">اكشف الجواب</button>
+  <div class="answer" hidden>
+    <span class="verdict f">غلط</span>
+    <p class="why">طول نابليون كان حوالي ١٦٩ سم، وهاد أطول من متوسط الرجل الفرنسي بزمانو. الغلط جاء من الفرق بين الوحدات الفرنسية والإنجليزية، ومن الرسوم الساخرة اللي صوّرتو قزم.</p>
+  </div>
+</section>
+
+<section class="slide fact" data-note="آخر معلومة. الحرب الإنجليزية الزنجبارية صارت يوم ٢٧ آب ١٨٩٦. المصادر بتقول إنها دامت بين ٣٨ و٤٥ دقيقة تقريباً، فقول 'حوالي'. بعدها انتقل للعبة.">
+  <span class="tag">معلومة ٦ من ٦</span>
+  <p class="claim">في حرب بالتاريخ خلصت بأقل من ساعة.</p>
+  <button class="btn reveal">اكشف الجواب</button>
+  <div class="answer" hidden>
+    <span class="verdict t">صح</span>
+    <p class="why">الحرب بين بريطانيا وزنجبار سنة ١٨٩٦ دامت حوالي ٤٠ دقيقة، وتعتبر الأقصر بالتاريخ المسجل. بريطانيا قصفت القصر وانتهى الصراع بسرعة.</p>
+  </div>
+</section>
+
+<section class="slide" data-note="انتقال: 'خلصنا من الحيوانات، منرجع لأخطر مخلوق بالشركة... زميلكم.'">
+  <p class="eyebrow">الفقرة الثانية</p>
+  <h1>٣ صفات، وحدة صح</h1>
+  <p class="lead">بنختار متطوعين بالقرعة. كل واحد بيحكي ٣ صفات عن حالو، ووحدة بس صحيحة. إنتو بتحزروا بالشات.</p>
+</section>
+
+<section class="slide" data-note="اشرح الهدف واللقب بحماس. أكد إنو الإجابة بالشات برقم بس (١ أو ٢ أو ٣)، وأنت بتسجل ترتيب الإجابات الصحيحة بالأسماء.">
+  <p class="eyebrow">الهدف واللعب</p>
+  <h2>كل واحد بدو يصير "كبير محققي مجرة"</h2>
+  <ol class="steps">
+    <li>بنختار متطوع بالقرعة، وبيحكي ٣ صفات عن حالو. وحدة بس صح.</li>
+    <li>إنتو بتكتبوا بالشات رقم الصفة اللي بتظنوها صح: ١ أو ٢ أو ٣.</li>
+    <li>المتطوع بيراقب الإجابات على الشات وبيحدد مين أول واحد اختار الجواب الصح، وهاد بياخد نقطة.</li>
+    <li>بآخر الفقرة، اللي جمع أكتر نقاط بياخد اللقب.</li>
+  </ol>
+  <h3>الألقاب اللي بتنتظركم</h3>
+  <div class="titles">
+    <div class="tt first"><b>كبير محققي مجرة</b><span>المركز الأول</span></div>
+    <div class="tt"><b>رادار مجرة</b><span>المركز الثاني، حدسو ما بيغلط</span></div>
+    <div class="tt"><b>نجم مجرة الصاعد</b><span>المركز الثالث</span></div>
+    <div class="tt"><b>عضو مميز بمجرة</b><span>لكل واحد جمع نقاط</span></div>
+  </div>
+  <div class="points">
+    <div class="pt"><b>١</b><span>نقطة لأول واحد جاوب صح</span></div>
+  </div>
+</section>
+
+<section class="slide" id="gameSlide" data-note="١) اضغط اختر متطوع. ٢) المتطوع يحكي ٣ صفات. ٣) الحضور بيجاوبوا بالشات، وأنت بتضغط على اسم أول واحد جاوب صح وبتنسجل النقطة فوراً. إذا غلطت اضغط تراجع.">
+  <p class="eyebrow">لوحة الجولة</p>
+  <div class="game">
+    <div class="panel" id="left">
+      <h3>المتطوع</h3>
+      <div class="vol empty" id="vol" aria-live="polite">ما انختار حدا بعد</div>
+      <div class="row">
+        <button class="btn" id="pick">اختر متطوع</button>
+        <button class="btn ghost" id="resetGame">تصفير النقاط والمتطوع</button>
+      </div>
+      <h3>مين أول واحد جاوب صح؟</h3>
+      <p class="hint" id="markHint">المتطوع بيراقب الشات وبيقلك مين أول واحد جاوب صح. اضغط على اسمو وبتنسجل النقطة فوراً.</p>
+      <div class="chips" id="markChips"></div>
+      <div class="row">
+        <button class="btn ghost" id="commit" disabled>تراجع</button>
+        <span class="hint" id="roundInfo"></span>
+      </div>
+    </div>
+    <div class="panel" id="right">
+      <h3>الترتيب الحالي</h3>
+      <ol class="board" id="board"></ol>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-note="اعلن الفائز واللقب بصوت عالي. صفّق، واطلب من الباقيين تصفيق. اختم بشكر خفيف.">
+  <p class="eyebrow">النتيجة النهائية</p>
+  <h2>ألقاب مجرة</h2>
+  <ol class="board big" id="finalBoard"></ol>
+  <p class="lead" id="finalNote"></p>
+</section>
+
+</main>
+
+<div class="notes" id="notes" aria-live="polite"><b>ملاحظة للمقدّم:</b> <span id="noteText"></span></div>
+
+<nav class="nav" aria-label="التنقل بين الشرائح">
+  <button id="prev" aria-label="الشريحة السابقة">→ السابق</button>
+  <button id="next" aria-label="الشريحة التالية">التالي ←</button>
+  <div class="progress" aria-hidden="true"><i id="prog"></i></div>
+  <span class="count" id="count">1</span>
+  <button id="fsBtn" class="hide-sm">ملء الشاشة</button>
+</nav>
+</div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var cur=0, notes=document.getElementById('notes'), noteText=document.getElementById('noteText');
+  var nf=new Intl.NumberFormat('ar-EG');
+  function $(id){return document.getElementById(id)}
+  function show(i,push){
+    var prevCur=cur;
+    cur=Math.max(0,Math.min(slides.length-1,i));
+    if(cur!==prevCur&&typeof resetTimers==='function')resetTimers();
+    slides.forEach(function(s,k){s.classList.toggle('active',k===cur)});
+    $('stage').scrollTop=0;
+    $('prog').style.width=((cur+1)/slides.length*100)+'%';
+    $('count').textContent=nf.format(cur+1)+'/'+nf.format(slides.length);
+    noteText.textContent=slides[cur].getAttribute('data-note')||'';
+    $('prev').disabled=cur===0;
+    $('next').disabled=cur===slides.length-1;
+    if(slides[cur]===$('finalBoard').closest('.slide'))renderBoards();
+    if(push!==false){try{history.replaceState(null,'','#s'+(cur+1))}catch(e){}}
+  }
+  $('next').onclick=function(){show(cur+1)};
+  $('prev').onclick=function(){show(cur-1)};
+  function toggleNotes(){notes.classList.toggle('on')}
+  $('fsBtn').onclick=function(){
+    try{
+      if(document.fullscreenElement){document.exitFullscreen()}
+      else{var p=document.documentElement.requestFullscreen();if(p&&p.catch)p.catch(function(){})}
+    }catch(e){}
+  };
+  document.addEventListener('keydown',function(e){
+    var t=e.target, tag=t&&t.tagName;
+    if(tag==='TEXTAREA'||tag==='INPUT'||(t&&t.isContentEditable))return;
+    if(e.key==='ArrowLeft'||e.key==='PageDown'){e.preventDefault();show(cur+1)}
+    else if(e.key==='ArrowRight'||e.key==='PageUp'){e.preventDefault();show(cur-1)}
+    else if(e.key==='n'||e.key==='N'){toggleNotes()}
+    else if(e.key==='t'||e.key==='T'){if(slides[cur]._startTimer)slides[cur]._startTimer()}
+    else if(e.key==='f'||e.key==='F'){$('fsBtn').click()}
+  });
+
+  // reveal buttons + 30s timer on fact slides
+  var DURATION=15, timers=[];
+  var actx=null;
+  function beep(freq,dur){
+    try{
+      actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+      var o=actx.createOscillator(),g=actx.createGain();
+      o.frequency.value=freq;g.gain.value=.15;o.connect(g);g.connect(actx.destination);
+      o.start();o.stop(actx.currentTime+dur);
+    }catch(e){}
+  }
+  slides.forEach(function(s){
+    var b=s.querySelector('.reveal'); if(!b)return;
+    var a=s.querySelector('.answer');
+    b.onclick=function(){a.hidden=!a.hidden;b.textContent=a.hidden?'اكشف الجواب':'أخفِ الجواب'};
+
+    if(!s.classList.contains('fact'))return;
+    var row=document.createElement('div');row.className='trow';
+    var tb=document.createElement('button');tb.className='btn ghost';tb.textContent='ابدأ المؤقت ('+nf.format(DURATION)+' ثانية)';
+    var box=document.createElement('div');box.className='timer';box.hidden=true;box.setAttribute('role','timer');
+    box.innerHTML='<span class="tnum"></span><span class="tbar"><i></i></span>';
+    b.parentNode.insertBefore(row,b);row.appendChild(tb);row.appendChild(b);row.appendChild(box);
+    var num=box.querySelector('.tnum'),bar=box.querySelector('i'),iv=null,endAt=0;
+    function stop(){if(iv){clearInterval(iv);iv=null}}
+    function reset(){stop();box.hidden=true;box.className='timer';tb.textContent='ابدأ المؤقت ('+nf.format(DURATION)+' ثانية)'}
+    function tick(){
+      var left=Math.max(0,(endAt-Date.now())/1000);
+      var sec=Math.ceil(left);
+      bar.style.transform='scaleX('+(left/DURATION)+')';
+      box.classList.toggle('low',left<=3);
+      if(left<=0){
+        stop();num.textContent='انتهى الوقت';box.classList.add('end');
+        tb.textContent='أعد المؤقت';beep(660,.5);return;
+      }
+      num.textContent=nf.format(sec);
+    }
+    function start(){
+      stop();box.hidden=false;box.className='timer';
+      endAt=Date.now()+DURATION*1000;tb.textContent='أعد المؤقت';
+      beep(880,.12);tick();iv=setInterval(tick,200);
+    }
+    tb.onclick=start;
+    s._startTimer=start;
+    timers.push(reset);
+  });
+  function resetTimers(){timers.forEach(function(r){r()})}
+
+  // ---------- game state ----------
+  // قائمة فريق مجرة (من ملف List of Majarra 360 Attendees)
+  var PLAYERS=['Abdelrahman Abolfotoh','Abdullah Balid','Ahmad Nour Etaki','Ahmed Aboelnaga','Ahmed Elsharkawy','Aisha Sahloul','Ammar Haykal','Ana Medina','Asmaa Ramadan','Ayah Kiwan','Ayham Mustafa','Basel Hamad','Batoul Al Qubrssli','Bilal Al Nabulsi','Christine Fares','Dia Haykal','Doaa Mahfoz','Duaa Aljarralah','Elise Zwein','Etab Hamza','Eyad Al Amari','Hamoud Almahmoud','Hatem Shahadeh','Jaafar Ahmad','Joni Lozada','Joya Al Zoghby','Khaled Shoushara','Lobna Eldewy','Maha Alchommari','Maher Al Hashem','Mais Al Ibraheem','Majd Ismael','Mohamad Hallak Fattal','Mudather Ahmed','Nader Al-Hajoo','Noor Alazmeh','Nour Elgabry','Nour Hammad','Ola Deeb','Ola Shojaa','Osama Hereh','Raneem Kadaan','Riad Sasila','Riham Al Mawlawe','Rodin Adel','Saed Haj Ali','Sami Kharboutly','Sandra Ferdosi','Shahid Mahmood','Shaukat Kanbar','Sidra Al Houssien','Wafaa Abdelrahman','Yasmin Farid','Yasmin Kawkash','Zain Coutait','Zain Mansour'];
+
+  var S={players:[],scores:{},done:[],vol:null,marks:[],round:0,committed:false};
+  var KEY='fiqra360-game';
+  try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);if(o&&o.scores)S=o}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+  // القائمة ثابتة، وأي اسم قديم محفوظ بالمتصفح وما هو بالقائمة بينشال
+  S.players=PLAYERS.slice();
+  (function(){
+    var sc={};S.players.forEach(function(n){sc[n]=S.scores&&S.scores[n]||0});S.scores=sc;
+    S.done=(S.done||[]).filter(function(n){return S.players.indexOf(n)>=0});
+    S.marks=(S.marks||[]).filter(function(n){return S.players.indexOf(n)>=0});
+    if(S.vol&&S.players.indexOf(S.vol)<0){S.vol=null;S.marks=[];S.committed=false}
+  })();
+
+  var TITLES=['كبير محققي مجرة','رادار مجرة','نجم مجرة الصاعد'];
+  var REST='عضو مميز بمجرة';
+  function titleFor(rank,score){if(score<=0)return '';return rank<TITLES.length?TITLES[rank]:REST}
+
+  function ranking(){
+    return S.players.map(function(n){return {n:n,s:S.scores[n]||0}})
+      .sort(function(a,b){return b.s-a.s});
+  }
+  function renderBoards(){
+    var r=ranking();
+    var level=-1,last=null;
+    r.forEach(function(p){if(p.s!==last){level++;last=p.s}p.level=level});
+    var html=r.map(function(p){
+      var t=titleFor(p.level,p.s);
+      return '<li><span class="rk">'+nf.format(p.level+1)+'</span><span class="nm">'+esc(p.n)+(t?'<small>'+t+'</small>':'')+'</span><span class="sc">'+nf.format(p.s)+'</span></li>';
+    }).join('');
+    $('board').innerHTML=html;
+    $('finalBoard').innerHTML=html;
+    var winners=r.filter(function(p){return p.level===0&&p.s>0}).map(function(p){return p.n});
+    $('finalNote').textContent=winners.length?('مبروك '+winners.join(' و')+'، اللقب '+(winners.length>1?'إلكم':'إلك')+': '+TITLES[0]+'.'):'';
+  }
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+  function renderMarks(){
+    var cands=S.players.filter(function(n){return n!==S.vol});
+    if(!S.vol){$('markChips').innerHTML='<span class="hint">اختر متطوع أول.</span>'}
+    else if(!cands.length){$('markChips').innerHTML='<span class="hint">ما في أسماء تانية بالقائمة.</span>'}
+    else $('markChips').innerHTML=cands.map(function(n){
+      var k=S.marks.indexOf(n);
+      return '<button class="chip" data-mk="'+esc(n)+'" aria-pressed="'+(k>=0)+'"'+(S.committed?' disabled':'')+'>'+(k>=0?'<span class="n">✓</span>':'')+esc(n)+'</button>';
+    }).join('');
+    $('commit').disabled=!S.committed;
+    $('roundInfo').textContent=(S.round?('الجولة '+nf.format(S.round)):'')+(S.committed?' · انسجلت النقطة':'');
+  }
+  function renderVol(){
+    var v=$('vol');
+    if(S.vol){v.textContent=S.vol;v.classList.remove('empty')}
+    else{v.textContent='ما انختار حدا بعد';v.classList.add('empty')}
+  }
+  function renderAll(){renderVol();renderMarks();renderBoards()}
+
+  $('markChips').onclick=function(e){
+    var b=e.target.closest('[data-mk]');if(!b||S.committed)return;
+    var n=b.getAttribute('data-mk');
+    S.marks=[n];S.committed=true;
+    S.scores[n]=(S.scores[n]||0)+1;
+    save();renderMarks();renderBoards();
+  };
+  var spin=null;
+  $('pick').onclick=function(){
+    if(spin||!S.players.length)return;
+    var pool=S.players.filter(function(n){return S.done.indexOf(n)<0});
+    if(!pool.length){S.done=[];pool=S.players.slice()}
+    var chosen=pool[Math.floor(Math.random()*pool.length)];
+    var v=$('vol');v.classList.remove('empty');
+    var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var steps=reduce?1:14,i=0;
+    $('pick').disabled=true;
+    spin=setInterval(function(){
+      i++;
+      if(i>=steps){
+        clearInterval(spin);spin=null;
+        v.textContent=chosen;S.vol=chosen;S.done.push(chosen);S.marks=[];S.committed=false;S.round++;
+        $('pick').disabled=false;save();renderMarks();
+      }else v.textContent=S.players[Math.floor(Math.random()*S.players.length)];
+    },90);
+  };
+  var rsT=null;
+  $('resetGame').onclick=function(){
+    var b=this;
+    if(!rsT){
+      b.textContent='اضغط مرة ثانية للتأكيد';
+      rsT=setTimeout(function(){rsT=null;b.textContent='تصفير النقاط والمتطوع'},3000);
+      return;
+    }
+    clearTimeout(rsT);rsT=null;b.textContent='تصفير النقاط والمتطوع';
+    if(spin){clearInterval(spin);spin=null;$('pick').disabled=false}
+    S.players.forEach(function(n){S.scores[n]=0});
+    S.vol=null;S.marks=[];S.committed=false;S.done=[];S.round=0;
+    save();renderAll();
+  };
+  $('commit').onclick=function(){
+    if(!S.committed||!S.marks.length)return;
+    var n=S.marks[0];
+    S.scores[n]=Math.max(0,(S.scores[n]||0)-1);
+    S.marks=[];S.committed=false;
+    save();renderMarks();renderBoards();
+  };
+
+  renderAll();
+  var m=/^#s(\d+)$/.exec(location.hash);
+  show(m?+m[1]-1:0,false);
+  window.addEventListener('hashchange',function(){var mm=/^#s(\d+)$/.exec(location.hash);if(mm)show(+mm[1]-1,false)});
+})();
+</script>
